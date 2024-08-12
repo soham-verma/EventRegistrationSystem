@@ -14,7 +14,6 @@ public class UserController {
 
     private final UserService userService;
 
-    // @Autowired
     public UserController(UserService userService) {
         this.userService = userService;
     }
@@ -29,17 +28,11 @@ public class UserController {
         return userService.getAllUsers();
     }
 
-    // @GetMapping("/{id}")
-    // public ResponseEntity<User> getUserById(@PathVariable Long id) {
-    //     return userService.getUserById(id)
-    //             .map(user -> ResponseEntity.ok(user))
-    //             .orElseGet(() -> ResponseEntity.notFound().build());
-    // }
-
     @GetMapping("/{id}")
-    public User getUserById(@PathVariable Long id) {
+    public ResponseEntity<User> getUserById(@PathVariable Long id) {
         return userService.getUserById(id)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .map(user -> ResponseEntity.ok(user))
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @PutMapping("/{id}")
@@ -47,4 +40,3 @@ public class UserController {
         return userService.updateUser(id, userDetails);
     }
 }
-
