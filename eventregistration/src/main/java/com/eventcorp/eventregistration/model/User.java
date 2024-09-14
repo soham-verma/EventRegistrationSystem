@@ -1,9 +1,12 @@
 package com.eventcorp.eventregistration.model;
 
+import java.util.List;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
@@ -18,7 +21,9 @@ public class User {
     private String email;
     private Long phone;
 
-    // Getters and Setters
+    @OneToMany(mappedBy = "organizer")
+    private List<Event> organizedEvents;
+
     public Long getId() {
         return id;
     }
@@ -27,20 +32,20 @@ public class User {
         this.id = id;
     }
 
-    public String getName() {
-      return this.name;
-    }
-
-    public void setName(String name) {
-      this.name = name;
-    }
-
     public String getUsername() {
         return username;
     }
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getPassword() {
@@ -59,11 +64,21 @@ public class User {
         this.email = email;
     }
 
-    public long getPhone() {
-      return this.phone;
+    public Long getPhone() {
+        return phone;
     }
 
-    public void setPhone(long phone) {
-      this.phone = phone;
+    public void setPhone(Long phone) {
+        this.phone = phone;
     }
+
+    public List<Event> getOrganizedEvents() {
+        return organizedEvents;
+    }
+
+    public void setOrganizedEvents(List<Event> organizedEvents) {
+        this.organizedEvents = organizedEvents;
+    }
+
+
 }
