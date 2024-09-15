@@ -1,4 +1,9 @@
 package com.eventcorp.eventregistration.model;
+import com.eventcorp.eventregistration.model.Registration;
+
+
+import java.time.LocalDate;
+import java.util.List;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -6,8 +11,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-
-import java.time.LocalDate;
+import jakarta.persistence.OneToMany;
 
 @Entity
 public class Event {
@@ -22,9 +26,39 @@ public class Event {
     @ManyToOne
     private Venue venue;
 
-    @ManyToOne
+    @ManyToOne(optional = false)
     @JoinColumn(name = "organizer_id", nullable = false)
     private User organizer;
+
+    @OneToMany(mappedBy = "event")  // Mapping to the 'event' field in the Registration entity
+    private List<Registration> registrations;
+
+    @OneToMany(mappedBy = "event")
+    private List<Payment> payments;
+
+    public Venue getVenue() {
+        return venue;
+    }
+
+    public void setVenue(Venue venue) {
+        this.venue = venue;
+    }
+
+    public List<Registration> getRegistrations() {
+        return registrations;
+    }
+
+    public void setRegistrations(List<Registration> registrations) {
+        this.registrations = registrations;
+    }
+
+    public List<Payment> getPayments() {
+        return payments;
+    }
+
+    public void setPayments(List<Payment> payments) {
+        this.payments = payments;
+    }
 
     public User getOrganizer() {
         return organizer;

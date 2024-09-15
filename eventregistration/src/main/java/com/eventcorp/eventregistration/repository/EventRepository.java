@@ -1,5 +1,6 @@
 package com.eventcorp.eventregistration.repository;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -12,7 +13,8 @@ import java.util.List;
 @Repository
 public interface EventRepository extends JpaRepository<Event, Long> {
     List<Event> findByNameContainingIgnoreCase(String name);
-    List<Event> findByDate(String date);
+    List<Event> findByDate(LocalDate date);
     List<Event> findByLocationContainingIgnoreCase(String location);
+    List<Event> findByOrganizerId(Long organizerId);
 }
 

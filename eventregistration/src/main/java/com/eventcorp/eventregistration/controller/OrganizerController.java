@@ -23,7 +23,7 @@ public class OrganizerController {
     @Autowired
     private OrganizerService organizerService;
 
-    @GetMapping("/{organizerId}/events")
+    @GetMapping("/organizers/{organizerId}/events")
     public List<Event> getOrganizerEvents(@PathVariable Long organizerId) {
         return organizerService.getOrganizerEvents(organizerId);
     }
