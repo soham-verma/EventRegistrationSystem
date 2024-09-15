@@ -1,6 +1,7 @@
 package com.eventcorp.eventregistration.model;
 import com.eventcorp.eventregistration.model.Registration;
-
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -24,10 +25,13 @@ public class Event {
     private String description;
 
     @ManyToOne
+    @JoinColumn(name = "venue_id")
+    @JsonIgnore  // This will be ignored during serialization to break the loop
     private Venue venue;
 
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "organizer_id", nullable = false)
+    @ManyToOne
+    @JoinColumn(name = "organizer_id")
+    @JsonIgnore  // Prevents serialization of the user reference inside Event
     private User organizer;
 
     @OneToMany(mappedBy = "event")  // Mapping to the 'event' field in the Registration entity

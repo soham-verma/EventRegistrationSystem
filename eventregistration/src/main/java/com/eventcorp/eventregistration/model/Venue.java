@@ -1,7 +1,8 @@
 package com.eventcorp.eventregistration.model;
 
 import java.util.List;
-import java.util.Set;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -20,8 +21,11 @@ public class Venue {
     private int capacity;
 
     @OneToMany(mappedBy = "venue")
+    @JsonIgnore  // Prevents circular reference
     private List<Event> events;
 
+
+    // Getters and Setters
     public Long getVenueId() {
         return venueId;
     }
@@ -61,9 +65,4 @@ public class Venue {
     public void setEvents(List<Event> events) {
         this.events = events;
     }
-
-
-
-
-
 }

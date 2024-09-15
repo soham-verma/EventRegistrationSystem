@@ -1,4 +1,5 @@
 package com.eventcorp.eventregistration.model;
+
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 
@@ -8,17 +9,19 @@ public class Payment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "event_id", nullable = false)
     private Event event;
 
-    @ManyToOne
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     private BigDecimal amount;
-    private String paymentStatus;  // This is the field that stores payment status
+    
+    private String paymentStatus;  // Status: PENDING, COMPLETED, FAILED
 
     // Getters and Setters
-
     public Long getId() {
         return id;
     }
@@ -55,7 +58,6 @@ public class Payment {
         return paymentStatus;
     }
 
-    // The setter method for paymentStatus
     public void setPaymentStatus(String paymentStatus) {
         this.paymentStatus = paymentStatus;
     }

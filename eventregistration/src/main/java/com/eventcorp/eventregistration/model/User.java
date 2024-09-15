@@ -2,6 +2,8 @@ package com.eventcorp.eventregistration.model;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -22,6 +24,7 @@ public class User {
     private Long phone;
 
     @OneToMany(mappedBy = "organizer")
+    @JsonIgnore  // Prevents recursive serialization of events
     private List<Event> organizedEvents;
 
     public Long getId() {

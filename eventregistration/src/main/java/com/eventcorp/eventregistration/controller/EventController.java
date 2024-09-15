@@ -32,6 +32,7 @@ public class EventController {
                 .orElseThrow(() -> new RuntimeException("Event not found"));
     }
 
+
     @PutMapping("/{id}")
     public Event updateEvent(@PathVariable Long id, @RequestBody Event eventDetails) {
         return eventService.updateEvent(id, eventDetails);
