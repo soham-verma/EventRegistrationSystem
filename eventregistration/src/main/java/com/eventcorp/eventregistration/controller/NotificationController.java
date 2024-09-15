@@ -10,14 +10,17 @@ import java.util.List;
 @RestController
 @RequestMapping("/notifications")
 public class NotificationController {
+
     @Autowired
     private NotificationService notificationService;
 
+    // Get all notifications for a specific user
     @GetMapping("/user/{userId}")
     public List<Notification> getNotificationsForUser(@PathVariable Long userId) {
         return notificationService.getNotificationsForUser(userId);
     }
 
+    // Send a notification to a user
     @PostMapping
     public Notification sendNotification(@RequestBody Notification notification) {
         return notificationService.sendNotification(notification);
