@@ -1,6 +1,7 @@
 package com.eventcorp.eventregistration.service;
 
 import com.eventcorp.eventregistration.model.Payment;
+import com.eventcorp.eventregistration.dto.*;
 import com.eventcorp.eventregistration.model.User;
 import com.eventcorp.eventregistration.model.Event;
 import com.eventcorp.eventregistration.repository.PaymentRepository;
@@ -20,23 +21,25 @@ public class PaymentService {
     @Autowired
     private EventRepository eventRepository;
 
-    @Autowired
-    private UserRepository userRepository;
+    public PaymentResponse processPayment(PaymentRequest paymentRequest) {
 
-    public Payment processPayment(Long eventId, Long userId, BigDecimal amount) {
-        // Fetch event and user
-        Event event = eventRepository.findById(eventId)
-                .orElseThrow(() -> new RuntimeException("Event not found"));
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+        Event event = eventRepository.findById(paymentRequest.getEventId())
+        .orElse(null);
 
-        // Create a new payment
+
         Payment payment = new Payment();
+        payment.setUserId(paymentRequest.getUserId());
         payment.setEvent(event);
-        payment.setUser(user);
-        payment.setAmount(amount);
-        payment.setPaymentStatus("COMPLETED");
+        payment.setAmount(paymentRequest.getAmount());
+        payment.setPaymentMethod(paymentRequest.getPaymentMethod());
+        payment.setSuccess(true);
 
-        return paymentRepository.save(payment);
+
+        paymentRepository.save(payment);
+
+
+        return new PaymentResponse(true, "Payment processed", payment.getTransactionId());
     }
 }
+
+

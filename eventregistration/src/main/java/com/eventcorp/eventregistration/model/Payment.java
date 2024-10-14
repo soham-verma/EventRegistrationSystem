@@ -2,34 +2,23 @@ package com.eventcorp.eventregistration.model;
 
 import jakarta.persistence.*;
 import java.math.BigDecimal;
+import java.util.UUID;
 
 @Entity
+@Table(name = "payments")
 public class Payment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "event_id", nullable = false)
+    private Long userId;
+
+    private String transactionId;
+    private Double amount;
+    private String paymentMethod;
+    @ManyToOne
+    @JoinColumn(name = "event_id")
     private Event event;
-
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
-
-    private BigDecimal amount;
-    
-    private String paymentStatus;  // Status: PENDING, COMPLETED, FAILED
-
-    // Getters and Setters
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
     public Event getEvent() {
         return event;
     }
@@ -38,27 +27,64 @@ public class Payment {
         this.event = event;
     }
 
-    public User getUser() {
-        return user;
+    private boolean success;
+
+
+
+
+    public Payment() {
+        this.transactionId = UUID.randomUUID().toString();
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public Long getId() {
+        return id;
     }
 
-    public BigDecimal getAmount() {
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
+
+
+
+    public String getTransactionId() {
+        return transactionId;
+    }
+
+    public void setTransactionId(String transactionId) {
+        this.transactionId = transactionId;
+    }
+
+    public Double getAmount() {
         return amount;
     }
 
-    public void setAmount(BigDecimal amount) {
+    public void setAmount(Double amount) {
         this.amount = amount;
     }
 
-    public String getPaymentStatus() {
-        return paymentStatus;
+    public String getPaymentMethod() {
+        return paymentMethod;
     }
 
-    public void setPaymentStatus(String paymentStatus) {
-        this.paymentStatus = paymentStatus;
+    public void setPaymentMethod(String paymentMethod) {
+        this.paymentMethod = paymentMethod;
     }
+
+    public boolean isSuccess() {
+        return success;
+    }
+
+    public void setSuccess(boolean success) {
+        this.success = success;
+    }
+
+
 }

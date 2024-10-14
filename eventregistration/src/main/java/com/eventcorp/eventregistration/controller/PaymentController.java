@@ -1,11 +1,11 @@
 package com.eventcorp.eventregistration.controller;
 
-import com.eventcorp.eventregistration.model.Payment;
+import com.eventcorp.eventregistration.dto.PaymentRequest;
+import com.eventcorp.eventregistration.dto.PaymentResponse;
 import com.eventcorp.eventregistration.service.PaymentService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.math.BigDecimal;
 
 @RestController
 @RequestMapping("/payments")
@@ -14,10 +14,10 @@ public class PaymentController {
     @Autowired
     private PaymentService paymentService;
 
+    // Endpoint to process a payment
     @PostMapping("/process")
-    public Payment processPayment(@RequestParam Long eventId,
-                                  @RequestParam Long userId,
-                                  @RequestParam BigDecimal amount) {
-        return paymentService.processPayment(eventId, userId, amount);
+    public ResponseEntity<PaymentResponse> processPayment(@RequestBody PaymentRequest paymentRequest) {
+        PaymentResponse paymentResponse = paymentService.processPayment(paymentRequest);
+        return ResponseEntity.ok(paymentResponse); // Returning PaymentResponse object
     }
 }

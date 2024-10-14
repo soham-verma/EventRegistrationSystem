@@ -11,6 +11,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 
@@ -31,17 +32,28 @@ public class Event {
 
     @ManyToOne
     @JoinColumn(name = "organizer_id")
-    @JsonIgnore  // Prevents serialization of the user reference inside Event
+    @JsonIgnore
     private User organizer;
 
-    @OneToMany(mappedBy = "event")  // Mapping to the 'event' field in the Registration entity
+    @OneToMany(mappedBy = "event")
     private List<Registration> registrations;
+
+    @ManyToMany
+    private List<User> registeredUsers;
 
     @OneToMany(mappedBy = "event")
     private List<Payment> payments;
 
     public Venue getVenue() {
         return venue;
+    }
+
+    public List<User> getRegisteredUsers() {
+        return registeredUsers;
+    }
+
+    public void setRegisteredUsers(List<User> registeredUsers) {
+        this.registeredUsers = registeredUsers;
     }
 
     public void setVenue(Venue venue) {
@@ -72,7 +84,7 @@ public class Event {
         this.organizer = organizer;
     }
 
-    // Getters and Setters
+
     public Long getId() {
         return id;
     }

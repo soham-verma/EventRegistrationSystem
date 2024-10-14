@@ -1,18 +1,22 @@
 package com.eventcorp.eventregistration.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-import com.eventcorp.eventregistration.model.Ticket;
+import com.eventcorp.eventregistration.dto.TicketRequest;
 import com.eventcorp.eventregistration.service.TicketService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/tickets")
 public class TicketController {
+
     @Autowired
     private TicketService ticketService;
 
-    @PostMapping
-    public Ticket issueTicket(@RequestBody Ticket ticket) {
-        return ticketService.issueTicket(ticket);
+    // Endpoint to issue a ticket
+    @PostMapping("/issue")
+    public ResponseEntity<String> issueTicket(@RequestBody TicketRequest ticketRequest) {
+        String result = ticketService.issueTicket(ticketRequest.getUserId(), ticketRequest.getEventId(), ticketRequest.getTransactionId());
+        return ResponseEntity.ok(result); // Returning success message from TicketService
     }
 }

@@ -1,8 +1,11 @@
 package com.eventcorp.eventregistration.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import com.eventcorp.eventregistration.dto.UserRequest;
+import com.eventcorp.eventregistration.dto.UserResponse;
 import com.eventcorp.eventregistration.model.User;
 import com.eventcorp.eventregistration.service.UserService;
 
@@ -19,8 +22,8 @@ public class UserController {
     }
 
     @PostMapping
-    public User createUser(@RequestBody User user) {
-        return userService.createUser(user);
+    public UserResponse createUser(@RequestBody UserRequest userRequest) {
+        return userService.createUser(userRequest);
     }
 
     @GetMapping

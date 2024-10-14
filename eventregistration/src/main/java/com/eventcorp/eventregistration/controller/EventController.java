@@ -1,8 +1,13 @@
 package com.eventcorp.eventregistration.controller;
 
-import org.springframework.web.bind.annotation.*;
+import com.eventcorp.eventregistration.dto.CombinedRequest;
+import com.eventcorp.eventregistration.dto.PaymentRequest;
+import com.eventcorp.eventregistration.dto.UserRequest;
 import com.eventcorp.eventregistration.model.Event;
 import com.eventcorp.eventregistration.service.EventService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -12,29 +17,47 @@ public class EventController {
 
     private final EventService eventService;
 
+    @Autowired
     public EventController(EventService eventService) {
         this.eventService = eventService;
     }
 
+
     @PostMapping
-    public Event createEvent(@RequestBody Event event) {
-        return eventService.createEvent(event);
+    public ResponseEntity<Event> createEvent(@RequestBody Event event) {
+        Event createdEvent = eventService.createEvent(event);
+        return ResponseEntity.ok(createdEvent);
     }
 
+    // Get all events
     @GetMapping
-    public List<Event> getAllEvents() {
-        return eventService.getAllEvents();
+    public ResponseEntity<List<Event>> getAllEvents() {
+        List<Event> events = eventService.getAllEvents();
+        return ResponseEntity.ok(events);
     }
+
 
     @GetMapping("/{id}")
-    public Event getEventById(@PathVariable Long id) {
-        return eventService.getEventById(id)
-                .orElseThrow(() -> new RuntimeException("Event not found"));
+    public ResponseEntity<Event> getEventById(@PathVariable Long id) {
+        Event event = eventService.getEventById(id)
+                .orElseThrow(() -> new RuntimeException("Event not found with id: " + id));
+        return ResponseEntity.ok(event);
     }
 
 
     @PutMapping("/{id}")
-    public Event updateEvent(@PathVariable Long id, @RequestBody Event eventDetails) {
-        return eventService.updateEvent(id, eventDetails);
+    public ResponseEntity<Event> updateEvent(@PathVariable Long id, @RequestBody Event eventDetails) {
+        Event updatedEvent = eventService.updateEvent(id, eventDetails);
+        return ResponseEntity.ok(updatedEvent);
+    }
+
+
+    @PostMapping("/register")
+    public ResponseEntity<String> registerUserAndProcessPayment(@RequestBody CombinedRequest combinedRequest) {
+        UserRequest userRequest = combinedRequest.getUserRequest();
+        PaymentRequest paymentRequest = combinedRequest.getPaymentRequest();
+
+        String response = eventService.registerUserAndProcessPayment(userRequest, paymentRequest);
+        return ResponseEntity.ok(response);
     }
 }
