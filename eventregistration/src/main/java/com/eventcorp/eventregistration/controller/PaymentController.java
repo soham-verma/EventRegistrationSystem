@@ -14,7 +14,7 @@ public class PaymentController {
     @Autowired
     private PaymentService paymentService;
 
-    // Endpoint to process a payment
+
     @PostMapping("/process")
     public ResponseEntity<PaymentResponse> processPayment(@RequestBody PaymentRequest paymentRequest) {
         PaymentResponse paymentResponse = paymentService.processPayment(paymentRequest);
