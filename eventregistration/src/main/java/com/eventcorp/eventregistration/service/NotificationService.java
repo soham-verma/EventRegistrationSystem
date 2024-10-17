@@ -8,6 +8,7 @@ import com.eventcorp.eventregistration.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -25,8 +26,14 @@ public class NotificationService {
     }
 
 
-    public Notification sendNotification(Notification notification) {
-        notification.setSentDate(java.time.LocalDateTime.now());  // Set the current date and time
+    public Notification sendNotification(Long userId, Long eventId, String message) {
+        Notification notification = new Notification();
+        notification.setUserId(userId);
+        notification.setEventId(eventId);
+        notification.setMessage(message);
+        notification.setSentDateTime(LocalDateTime.now());
+
+        // Save the notification in the database
         return notificationRepository.save(notification);
     }
 

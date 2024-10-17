@@ -1,0 +1,41 @@
+package com.eventcorp.eventregistration.scheduler;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
+import com.eventcorp.eventregistration.model.Event;
+import com.eventcorp.eventregistration.model.Registration;
+import com.eventcorp.eventregistration.service.EventService;
+import com.eventcorp.eventregistration.service.NotificationService;
+
+import java.time.LocalDateTime;
+import java.util.List;
+
+@Component
+public class ReminderScheduler {
+    @Autowired
+    private EventService eventService;
+
+    @Autowired
+    private NotificationService notificationService;
+
+    // Run the task every hour
+    @Scheduled(fixedRate = 3600000)
+    public void sendEventReminders() {
+        // Find events happening within the next 24 hours
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime next24Hours = now.plusHours(24);
+        List<Event> upcomingEvents = eventService.findEventsBetween(now, next24Hours);
+
+        for (Event event : upcomingEvents) {
+            // Get all registrations for the event
+            List<Registration> registrations = eventService.getRegistrationsForEvent(event.getId());
+            
+            // Send reminder to each registered user
+            for (Registration registration : registrations) {
+                String message = "Reminder: The event \"" + event.getName() + "\" is starting soon!";
+                notificationService.sendNotification(registration.getUserId(), event.getId(), message);
+            }
+        }
+    }
+}

@@ -28,7 +28,7 @@ public class PaymentService {
             return new PaymentResponse(false, "Simulated payment failure", null);
         }
 
-        if ("".equals(paymentRequest.getPaymentMethod())) {
+        if (" ".equals(paymentRequest.getPaymentMethod())) {
             return new PaymentResponse(false, "Simulated payment failure", null);
         }
 

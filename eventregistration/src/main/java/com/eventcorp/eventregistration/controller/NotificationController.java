@@ -23,6 +23,11 @@ public class NotificationController {
     // Send a notification to a user
     @PostMapping
     public Notification sendNotification(@RequestBody Notification notification) {
-        return notificationService.sendNotification(notification);
+        // Call the service layer to send the notification
+        return notificationService.sendNotification(
+            notification.getUserId(), 
+            notification.getEventId(), 
+            notification.getMessage()
+        );
     }
 }
