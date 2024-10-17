@@ -13,6 +13,10 @@ public class Notification {
 
     private String message;
     private LocalDateTime sentDate;
+    private Long userId;
+    private Long eventId;
+    private LocalDateTime sentDateTime;
+
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)  // Foreign key to User table
@@ -49,5 +53,29 @@ public class Notification {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
+
+    public Long getEventId() {
+        return eventId;
+    }
+
+    public void setEventId(Long eventId) {
+        this.eventId = eventId;
+    }
+
+    public LocalDateTime getSentDateTime() {
+        return sentDateTime;
+    }
+
+    public void setSentDateTime(LocalDateTime sentDateTime) {
+        this.sentDateTime = sentDateTime;
     }
 }
