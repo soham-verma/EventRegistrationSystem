@@ -95,38 +95,34 @@ public class EventService {
 
         UserResponse userResponse = userService.createUser(userRequest);
 
-        if (userResponse.isSuccess()) {
-
-            Event event = eventRepository.findById(paymentRequest.getEventId())
-        .orElse(null);
-
-            if (event == null) {
-
-                return "Event not found";
-            }
-
-
-
-
-            event.getRegisteredUsers().add(userResponse.getUser());
-            eventRepository.save(event);
-            kafkaProducerService.sendUserInteraction(event.toString(), "REGISTERED");
-            System.out.println("User " + UserService.class.getName() + " registered for event " + event);
-
-
-            PaymentResponse paymentResponse = paymentService.processPayment(paymentRequest);
-
-            if (paymentResponse.isSuccess()) {
-
-                return ticketService.issueTicket(userResponse.getUser().getId(), paymentRequest.getEventId(), paymentResponse.getTransactionId());
-            } else {
-                return "Payment failed: " + paymentResponse.getMessage();
-            }
-        } else {
+        if (!userResponse.isSuccess()) {
             return "User creation failed: " + userResponse.getMessage();
         }
 
+        Event event = eventRepository.findById(paymentRequest.getEventId()).orElse(null);
 
+        if (event == null) {
+            return "Event not found";
+        }
+
+        // Simulate payment processing
+        PaymentResponse paymentResponse = paymentService.processPayment(paymentRequest);
+
+        if (paymentResponse.isSuccess()) {
+            // Only register user and issue ticket if payment is successful
+            event.getRegisteredUsers().add(userResponse.getUser());
+            eventRepository.save(event);
+            kafkaProducerService.sendUserInteraction(event.toString(), "REGISTERED");
+
+            System.out.println("User " + userResponse.getUser().getId() + " registered for event " + event);
+
+            return ticketService.issueTicket(userResponse.getUser().getId(), paymentRequest.getEventId(), paymentResponse.getTransactionId());
+        } else {
+            // If payment fails, return failure message and don't register the user
+            return "Payment failed: " + paymentResponse.getMessage();
+        }
     }
+
+
 
 }

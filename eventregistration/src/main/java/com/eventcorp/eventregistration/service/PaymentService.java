@@ -24,8 +24,21 @@ public class PaymentService {
 
     public PaymentResponse processPayment(PaymentRequest paymentRequest) {
 
+        if ("FAIL".equals(paymentRequest.getPaymentMethod())) {
+            return new PaymentResponse(false, "Simulated payment failure", null);
+        }
+
+        if ("".equals(paymentRequest.getPaymentMethod())) {
+            return new PaymentResponse(false, "Simulated payment failure", null);
+        }
+
         Event event = eventRepository.findById(paymentRequest.getEventId())
-        .orElse(null);
+                .orElse(null);
+
+        if (event == null) {
+            return new PaymentResponse(false, "Event not found", null);
+        }
+
 
 
         Payment payment = new Payment();
@@ -35,9 +48,8 @@ public class PaymentService {
         payment.setPaymentMethod(paymentRequest.getPaymentMethod());
         payment.setSuccess(true);
 
-
+        // Save successful payment
         paymentRepository.save(payment);
-
 
         return new PaymentResponse(true, "Payment processed", payment.getTransactionId());
     }
@@ -54,6 +66,10 @@ public class PaymentService {
             System.out.println("Refund processed for transaction: " + payment.getTransactionId());
         }
     }
+
+
+
+
 
 }
 
