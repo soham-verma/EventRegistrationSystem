@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Service
 public class PaymentService {
@@ -40,6 +41,20 @@ public class PaymentService {
 
         return new PaymentResponse(true, "Payment processed", payment.getTransactionId());
     }
+
+    public void processRefundsForEvent(Long eventId) {
+        // Fetch all payments for the event
+        List<Payment> payments = paymentRepository.findByEventId(eventId);
+
+
+        for (Payment payment : payments) {
+            payment.setSuccess(false);
+            paymentRepository.save(payment);
+            // Logic to actually process refund (e.g., call a payment gateway)
+            System.out.println("Refund processed for transaction: " + payment.getTransactionId());
+        }
+    }
+
 }
 
 

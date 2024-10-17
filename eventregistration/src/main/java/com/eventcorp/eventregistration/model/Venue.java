@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -20,8 +21,7 @@ public class Venue {
     private String address;
     private int capacity;
 
-    @OneToMany(mappedBy = "venue")
-    @JsonIgnore  // Prevents circular reference
+    @OneToMany(mappedBy = "venue", cascade = CascadeType.ALL)  // 'venue' refers to the field in Event
     private List<Event> events;
 
 

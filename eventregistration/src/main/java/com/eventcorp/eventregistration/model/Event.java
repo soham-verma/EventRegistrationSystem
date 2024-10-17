@@ -1,11 +1,11 @@
 package com.eventcorp.eventregistration.model;
-import com.eventcorp.eventregistration.model.Registration;
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.time.LocalDate;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -13,78 +13,34 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
 
 @Entity
+
 public class Event {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String name;
     private LocalDate date;
     private String location;
     private String description;
+    private boolean canceled;
 
     @ManyToOne
     @JoinColumn(name = "venue_id")
-    @JsonIgnore  // This will be ignored during serialization to break the loop
     private Venue venue;
 
     @ManyToOne
-    @JoinColumn(name = "organizer_id")
-    @JsonIgnore
+    @JoinColumn(name = "organizer_id")  // This column will store the ID of the organizer
     private User organizer;
 
-    @OneToMany(mappedBy = "event")
-    private List<Registration> registrations;
-
-    @ManyToMany
+    @ManyToMany(mappedBy = "event",  cascade = CascadeType.ALL)
+    @JsonIgnore  // Prevents recursive serialization of events
     private List<User> registeredUsers;
 
-    @OneToMany(mappedBy = "event")
-    private List<Payment> payments;
 
-    public Venue getVenue() {
-        return venue;
-    }
-
-    public List<User> getRegisteredUsers() {
-        return registeredUsers;
-    }
-
-    public void setRegisteredUsers(List<User> registeredUsers) {
-        this.registeredUsers = registeredUsers;
-    }
-
-    public void setVenue(Venue venue) {
-        this.venue = venue;
-    }
-
-    public List<Registration> getRegistrations() {
-        return registrations;
-    }
-
-    public void setRegistrations(List<Registration> registrations) {
-        this.registrations = registrations;
-    }
-
-    public List<Payment> getPayments() {
-        return payments;
-    }
-
-    public void setPayments(List<Payment> payments) {
-        this.payments = payments;
-    }
-
-    public User getOrganizer() {
-        return organizer;
-    }
-
-    public void setOrganizer(User organizer) {
-        this.organizer = organizer;
-    }
-
-
+    // Getters and setters
     public Long getId() {
         return id;
     }
@@ -123,5 +79,34 @@ public class Event {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public boolean isCanceled() {
+        return canceled;
+    }
+
+    public void setCanceled(boolean canceled) {
+        this.canceled = canceled;
+    }
+
+    public User getOrganizer() {
+        return organizer;
+    }
+
+    public void setOrganizer(User organizer) {
+        this.organizer = organizer;
+    }
+
+    public List<User> getRegisteredUsers() {
+        return registeredUsers;
+    }
+
+    public void setRegisteredUsers(List<User> registeredUsers) {
+        this.registeredUsers = registeredUsers;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("Event[id=%d, name='%s', date='%s']", id, name, date);
     }
 }

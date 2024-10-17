@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.security.SecurityProperties.User;
 import org.springframework.stereotype.Service;
 
 import com.eventcorp.eventregistration.dto.PaymentRequest;
@@ -23,6 +24,14 @@ public class EventService {
     private PaymentService paymentService;
     @Autowired
     private EventRepository eventRepository;
+
+    @Autowired
+    private NotificationService notificationService;
+
+    @Autowired
+    private KafkaProducerService kafkaProducerService;
+
+
 
 
 
@@ -58,6 +67,30 @@ public class EventService {
         return eventRepository.save(event);
     }
 
+    public String cancelEvent(Long eventid){
+        Event event = eventRepository.findById(eventid)
+                .orElse(null);
+
+                if (event == null) {
+
+                    return "Event not found";
+                }
+
+
+        // Mark the event as canceled
+        event.setCanceled(true);
+        eventRepository.save(event);
+
+        // Initiate refunds for registered users
+        paymentService.processRefundsForEvent(eventid);
+
+        // Notify registered users about the cancellation
+        notificationService.notifyUsersOfCancellation(eventid);
+
+        return "Event canceled, refunds processed, and notifications sent.";
+
+    }
+
     public String registerUserAndProcessPayment(UserRequest userRequest, PaymentRequest paymentRequest) {
 
         UserResponse userResponse = userService.createUser(userRequest);
@@ -74,8 +107,11 @@ public class EventService {
 
 
 
+
             event.getRegisteredUsers().add(userResponse.getUser());
             eventRepository.save(event);
+            kafkaProducerService.sendUserInteraction(event.toString(), "REGISTERED");
+            System.out.println("User " + UserService.class.getName() + " registered for event " + event);
 
 
             PaymentResponse paymentResponse = paymentService.processPayment(paymentRequest);

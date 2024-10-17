@@ -17,7 +17,7 @@ public class EventController {
 
     private final EventService eventService;
 
-    @Autowired
+
     public EventController(EventService eventService) {
         this.eventService = eventService;
     }
@@ -49,6 +49,12 @@ public class EventController {
     public ResponseEntity<Event> updateEvent(@PathVariable Long id, @RequestBody Event eventDetails) {
         Event updatedEvent = eventService.updateEvent(id, eventDetails);
         return ResponseEntity.ok(updatedEvent);
+    }
+
+    @PutMapping("/{id}/cancel")
+    public ResponseEntity<String> cancelEvent(@PathVariable Long id) {
+        String response = eventService.cancelEvent(id);
+        return ResponseEntity.ok(response);
     }
 
 
